@@ -1,4 +1,4 @@
-# Stage 0: Manual stage
+# Stage 1: Manual stage
 ## Intro
 This stage will cover simply setting up a simple server and deploying your code.
 
