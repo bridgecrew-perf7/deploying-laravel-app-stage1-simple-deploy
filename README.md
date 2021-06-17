@@ -1,13 +1,17 @@
 # Stage 1: Manual stage
+
 ## Intro
+
 This stage will cover simply setting up a simple server and deploying your code.
 
 ### Pros
+
 * Simple
 * Get to learn what for future stages
 * Up and running quickly
 
 ### Cons
+
 * Not repeatable
 * Hard not to have a difference between prod and dev
 * Missing recommended extra programs, e.g. Postfix, Centralised logging
@@ -15,6 +19,7 @@ This stage will cover simply setting up a simple server and deploying your code.
 * No documentation on how exactly to set future servers up
 
 ## Assumptions
+
 1. Php code is in git.
 1. You are using PostgreSQL.
 1. If not, replace the PostgreSQL step with your DB of choice.
@@ -30,8 +35,8 @@ This stage will cover simply setting up a simple server and deploying your code.
 1. I would recommend using a DNS provider that supports [Terraform](https://www.terraform.io/) and
    [LetsEncrypt](https://community.letsencrypt.org/t/dns-providers-who-easily-integrate-with-lets-encrypt-dns-validation/86438)
 
-
 ## Step 1: Get the information needed
+
 Decide on the domain that you would like to use for your server. e.g. www.example.com.
 
 Decide on a name for your server. You'll use this as a DNS entry to point to the server.
@@ -40,10 +45,11 @@ The server name is more important for later steps where you'll have more than on
 
 Naming servers can follow any naming system you want.
 
-For this example, we are going to be boring and use
-the simple ```srv01```will then have a domain name of ```srv01.example.com```.
+For this example, we are going to be boring and use the simple ```srv01```will then have a domain name
+of ```srv01.example.com```.
 
 ## Step 2: Create a virtual server
+
 Log into your [DigitalOcean](https://m.do.co/c/179a47e69ec8) and select the droplets tab.
 
 ![DO Droplets Tab](images/DO_droplets_btn.png)
@@ -54,8 +60,8 @@ Then click the create button and select Droplets - Create cloud servers.
 
 You should now see the virtual server creation page.
 
-For the example, we are just going to create the smallest server possible, though you may need to select
-a larger one if you need more performance.
+For the example, we are just going to create the smallest server possible, though you may need to select a larger one if
+you need more performance.
 
 We'll be using Ubuntu 20.04 mainly as it's the long term release version.
 
@@ -78,8 +84,8 @@ Now add the hostname with the domain that you chose above as the server hostname
 
 ![DO Create droplet hostname](images/DO_droplet_hostname.png)
 
-DigitalOcean will create PTR records pointing back to the servers IP's. Some service use this to
-validate your server, so it's a good idea to get it correct.
+DigitalOcean will create PTR records pointing back to the servers IP's. Some service use this to validate your server,
+so it's a good idea to get it correct.
 
 Now click the create button to finalise.
 
@@ -90,6 +96,7 @@ DigitalOcean will start creating your virtual server and take you to a page show
 Wait for the server to finish being created, then continue with the next step.
 
 ## Step 3: Setup DNS
+
 After your server has finished creating, open up the new server page.
 
 You should have both an IPv4 and IPv6 address for the server at the top of the page.
@@ -100,11 +107,10 @@ If you don't have the IPv6 IP, you can click the 'Enable now button'.
 
 Grab these two IP's and head over to your DNS provider.
 
-I'll be going over how to do this with [Cloudflare](https://www.cloudflare.com/), but the steps should be the same for most other
-providers.
+I'll be going over how to do this with [Cloudflare](https://www.cloudflare.com/), but the steps should be the same for
+most other providers.
 
-Now using the IP's create both A records, using the IPv4, and AAAA records, using the IPv6, for the following
-entries.
+Now using the IP's create both A records, using the IPv4, and AAAA records, using the IPv6, for the following entries.
 
 If you are using [Cloudflare](https://www.cloudflare.com/), make sure the proxy is disabled for now.
 
@@ -185,6 +191,7 @@ Though you can run them as once command
 #### Install the database
 
 Make sure we will get the latest PostgreSQL
+
 ```bash
 echo "deb https://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7FCC7D46ACCC4CF8
@@ -192,30 +199,37 @@ apt update
 ```
 
 Install PostgreSQL
+
 ```bash
 apt install -y postgresql postgresql-client postgresql-contrib
 ```
 
 #### Install Redis
+
 Make sure we will get the latest Redis
+
 ```bash
 add-apt-repository -y ppa:chris-lea/redis-server
 apt update
 ```
 
 Install Redis
+
 ```bash
 apt install -y redis
 ```
 
 #### Install the PHP and required PHP modules
+
 Make sure we will get the latest PHP
+
 ```bash
 add-apt-repository -y ppa:ondrej/php
 apt update
 ```
 
 Install PHP and modules
+
 ```bash
 apt install -y php7.4 php7.4-cli php7.4-fpm \
       php7.4-bcmath \
@@ -235,12 +249,14 @@ apt install -y php7.4 php7.4-cli php7.4-fpm \
 #### Install NGINX webserver
 
 Make sure we will get the latest NGINX
+
 ```bash
 add-apt-repository -y ppa:nginx/stable
 apt update
 ```
 
 Install Nginx webserver
+
 ```bash
 apt install -y nginx
 ```
@@ -248,6 +264,7 @@ apt install -y nginx
 #### Install certbot for ssl certificate
 
 Install certbot
+
 ```bash
 apt install -y \
   certbot \
@@ -255,6 +272,7 @@ apt install -y \
 ```
 
 With all the PPA's added, just run a dist-upgrade to make sure everything is updated.
+
 ```bash
 apt -y dist-upgrade
 apt -y autoremove
@@ -338,11 +356,10 @@ Then restart Nginx ```service restart nginx```.
 
 ### Step 4.4: Generating the SSL certificate
 
-As we have already installed certbot and have the DNS pointing at the server, it is pretty simple
-to get the certificate generated and set up.
+As we have already installed certbot and have the DNS pointing at the server, it is pretty simple to get the certificate
+generated and set up.
 
-First, confirm the Nginx is up by typing your domain into the browser with HTTP. (HTTPS won't
-work yet)
+First, confirm the Nginx is up by typing your domain into the browser with HTTP. (HTTPS won't work yet)
 
 e.g. Go to http://www.example.com
 
@@ -371,10 +388,10 @@ Once you are complete, you can then restart your Nginx server to apply the chang
 service nginx restart
 ```
 
-You can now reload the web page. It should redirect you to HTTPS, and you should get
-a lock in the browser.
+You can now reload the web page. It should redirect you to HTTPS, and you should get a lock in the browser.
 
-If you now edit the ```/etc/nginx/sites-enabled/default``` file, you'll see that the file has the certificate information.
+If you now edit the ```/etc/nginx/sites-enabled/default``` file, you'll see that the file has the certificate
+information.
 
 We are pretty close to being finished.
 
@@ -382,7 +399,8 @@ We are pretty close to being finished.
 
 Decide on the user, password and database name you would like.
 
-For this, we'll be using db_example,user_example and password_example for all three but please pick a more secure password.
+For this, we'll be using db_example,user_example and password_example for all three but please pick a more secure
+password.
 
 Then run the following replacing example with what you have picked.
 
@@ -449,8 +467,8 @@ This is under ```Settings``` -> ```Deploy keys```
 
 Please don't give it write access.
 
-Now remove the ```/var/www/site``` directory as we will clone the repository over it.
-The clone will complain if the folder is there.
+Now remove the ```/var/www/site``` directory as we will clone the repository over it. The clone will complain if the
+folder is there.
 
 ```bash
 rm -rf /var/www/site
